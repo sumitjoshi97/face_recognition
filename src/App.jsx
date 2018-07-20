@@ -35,6 +35,19 @@ class App extends Component {
         box:'',
         route: '',
         isSignedIn: false,
+        user: {
+            id: '',
+            name: '',
+            email: '',
+            entries: '',
+            joined: ''
+        }
+    }
+
+    componentDidMount() {
+        fetch('http://localhost:5000')
+            .then(response => console.log(response.json()))
+            .catch(err => console.log(err));
     }
 
     onInputChange = (event) => {
@@ -43,6 +56,19 @@ class App extends Component {
         })
     }
 
+    loadUser = (user) => {
+        this.setState({
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                entries: user.entries,
+                joined: user.joined
+            }
+            
+
+        })
+    }
     onButtonSubmit = () => {
         this.setState((prevState) =>({imageUrl: prevState.input}))
         app.models.predict(
