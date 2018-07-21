@@ -28,8 +28,7 @@ const particlesOptions = {
     }
 }
 
-class App extends Component {
-    state = {
+const initialState = {
         input: '',
         imageUrl: '',
         box: {},
@@ -43,6 +42,9 @@ class App extends Component {
             joined: ''
         }
     }
+
+class App extends Component {
+    state = initialState
 
     loadUser = (user) => {
         this.setState({
@@ -76,6 +78,7 @@ class App extends Component {
                         .then(count => {
                             this.setState(Object.assign(this.state.user, { entries: count }))
                         })
+                        .catch(console.log)
 
                 }
                 this.displayFaceBox(this.calculateFaceLocation(response))
@@ -105,7 +108,7 @@ class App extends Component {
 
     onRouteChange = (route) => {
         if (route === 'signin' || route === 'register') {
-            this.setState({isSignedIn: false})
+            this.setState(initialState)
         } else if(route === 'home') {
             this.setState({isSignedIn: true})
         }
