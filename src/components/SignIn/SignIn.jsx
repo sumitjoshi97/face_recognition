@@ -1,21 +1,21 @@
 import React, {Component} from 'react';
 
-export class SignIn extends Component {
-
+class SignIn extends Component {
     state = {
         signInEmail: '',
         signInPassword: ''
     }
 
-    componentDidMount() {
-        console.log('signin did mount')
-    }
     onEmailChange = (event) => {
-        this.setState({signInEmail: event.target.value})
+        this.setState({
+            signInEmail: event.target.value
+        })
     }
 
     onPasswordChange = (event) => {
-        this.setState({signInPassword: event.target.value})
+        this.setState({
+            signInPassword: event.target.value
+        })
     }
 
     onSubmitSignIn = () => {
@@ -37,14 +37,14 @@ export class SignIn extends Component {
     }
 
     render() {
-        const {onRouteChange} = this.props;
+        const { onRouteChange } = this.props;
 
         return (
             <article
                 className="br3 ba dark-grey b--black-10 mv4 w-100 w-50-m w-25-l mw5 center">
                 <main className="pa4 black-80 ">
-                    <form className="measure">
-                        <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
+                    <div className="measure">
+                        <fieldset id="sign_in" className="ba b--transparent ph0 mh0">
                             <legend className="f4 fw6 ph0 mh0">Sign In</legend>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
@@ -69,15 +69,15 @@ export class SignIn extends Component {
                         </fieldset>
                         <div className="">
                             <input
-                                onClick={() => this.onSubmitSignIn()}
+                                onClick={this.onSubmitSignIn}
                                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                                 type="submit"
                                 value="Sign in"/>
                         </div>
                         <div className="lh-copy mt3">
-                            <p onClick={() => onRouteChange('register')} className="f6 link dim black db">Sign up</p>
+                            <p onClick={() => onRouteChange('register')} className="f6 link dim black db">Register</p>
                         </div>
-                    </form>
+                    </div>
                 </main>
             </article>
         )
