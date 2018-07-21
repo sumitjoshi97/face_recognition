@@ -7,6 +7,9 @@ export class SignIn extends Component {
         signInPassword: ''
     }
 
+    componentDidMount() {
+        console.log('signin did mount')
+    }
     onEmailChange = (event) => {
         this.setState({signInEmail: event.target.value})
     }
@@ -16,7 +19,6 @@ export class SignIn extends Component {
     }
 
     onSubmitSignIn = () => {
-        console.log(this.state);
         fetch('http://localhost:5000/signin', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
@@ -25,8 +27,13 @@ export class SignIn extends Component {
                 password: this.state.signInPassword
             })
         })
-        console.log('post send')
-        this.props.onRouteChange('home');
+        .then(response => response.json())
+        .then(user => {
+            if (user.id) {
+                this.props.loadUser(user);
+                this.props.onRouteChange('home');
+            }
+        });
     }
 
     render() {

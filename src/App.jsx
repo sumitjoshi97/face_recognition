@@ -45,9 +45,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        fetch('http://localhost:5000')
-            .then(response => console.log(response.json()))
-            .catch(err => console.log(err));
+            console.log('App did mount')
     }
 
     onInputChange = (event) => {
@@ -65,19 +63,37 @@ class App extends Component {
                 entries: user.entries,
                 joined: user.joined
             }
-            
-
         })
     }
+
     onButtonSubmit = () => {
         this.setState((prevState) =>({imageUrl: prevState.input}))
-        app.models.predict(
-            Clarifai.FACE_DETECT_MODEL, 
-            this.state.input)
-            .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+
+        app.models
+            .predict(
+                Clarifai.FACE_DETECT_MODEL, 
+                this.state.input)
+
+            .then(response => {
+                if(response) {
+                    fetch('http://localhost:5000/image', {
+                        method: 'put',
+                        headers: {'Content-Type': 'application/josn'}, 
+                        body: JSON.stringify({
+                            id: this.state.user.id
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(count => {
+                        this.setState(Object.assign(this.state.user, {entries: count}))
+                        console.log('entries updated' ,this.state.user)
+                    })
+                }
+                this.displayFaceBox(this.calculateFaceLocation(response))   
+            })
             .catch(err => console.log(err))
-        
     }
+        
 
     calculateFaceLocation = (data) => {
         const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -110,7 +126,7 @@ class App extends Component {
     }
 
     render() {
-        const {imageUrl, box, route, isSignedIn} = this.state;
+        const {imageUrl, box, route, isSignedIn, user} = this.state;
 
         return (
             <div className="App">
@@ -121,14 +137,14 @@ class App extends Component {
                { route ==='home' ?  
                     <div>
                         <Logo />
-                        <Rank />
+                        <Rank name={user.name} entries={user.entries}/>
                         <ImageLinkForm
                             onInputChange={this.onInputChange}
                             onButtonSubmit={this.onButtonSubmit}
                         />
                         <FaceRecognition ImageUrl={imageUrl} box={box} />
                     </div> :
-                    ( route === 'register' ? <Register onRouteChange={this.onRouteChange}/> : <SignIn onRouteChange={this.onRouteChange}/> )
+                    ( route === 'register' ? <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/> : <SignIn onRouteChange={this.onRouteChange} loadUser={this.loadUser}/> )
                     
                 }
             </div>
