@@ -26,7 +26,7 @@ export class Register extends Component {
     }
 
     onSubmitRegister = () => {
-        fetch('http://localhost:5000/register', {
+        fetch('https://face-recog-api97.herokuapp.com/register', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json'

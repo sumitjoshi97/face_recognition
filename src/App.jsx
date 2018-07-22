@@ -6,15 +6,8 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Rank from './components/Rank/Rank';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
-
-
-const app = new Clarifai.App({
-    apiKey: 'b9556e1bfe254ee48ce105137f50604c'
-});
-
 
 const particlesOptions = {
     particles: {
@@ -60,17 +53,17 @@ class App extends Component {
 
     onButtonSubmit = () => {
         this.setState({imageUrl: this.state.input})
-        fetch('http://localhost:5000/imageUrl', {
+        fetch('https://face-recog-api97.herokuapp.com/imageUrl', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 input: this.state.input
             })
-        })
+        })  
         .then(response => response.json())      
         .then(response => {
             if (response) {
-                fetch('http://localhost:5000/image', {
+                fetch('https://face-recog-api97.herokuapp.com/image', {
                     method: 'put',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
