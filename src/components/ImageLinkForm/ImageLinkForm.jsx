@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './ImageLinkForm.css';
-export default class componentName extends Component {
+export default class ImageLinkForm extends Component {
     render() {
         return (
             <div>
