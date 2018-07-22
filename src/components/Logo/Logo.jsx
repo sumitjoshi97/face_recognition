@@ -7,12 +7,12 @@ const Logo = (props) => (
         <Tilt
             className="Tilt Logo"
             options={{
-            max: 25
-        }}
+                max: 25
+            }}
             style={{
-            height: 150,
-            width: 150
-        }}>
+               height: 140,
+                width: 140,
+            }}>
             <div className="Tilt-inner">
                 <img style={{paddingTop: '10px'}}src={brain} alt="logo"/>
             </div>

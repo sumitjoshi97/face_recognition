@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
 import Navigation from './components/Navigation/Navigation';
-import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Rank from './components/Rank/Rank';
@@ -81,7 +80,6 @@ class App extends Component {
         })
         .catch(err => console.log(err));
     }
-        
 
     calculateFaceLocation = (data) => {
         const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -128,11 +126,10 @@ class App extends Component {
                     params={particlesOptions}
                 />
                 <Navigation 
-                    onRouteChange={this.onRouteChange} 
+                    onRouteChange={this.onRouteChange}
                     isSignedIn={isSignedIn}/>
                 { route === 'home' ?
                     <div>
-                        <Logo />
                         <Rank 
                             name={this.state.user.name} 
                             entries={this.state.user.entries} />
