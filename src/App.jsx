@@ -23,7 +23,7 @@ const particlesOptions = {
 const initialState = {
         input: '',
         imageUrl: '',
-        box: {},
+        boxes: [],
         route: 'signin',
         isSignedIn: false,
         user: {
@@ -54,71 +54,71 @@ class App extends Component {
         this.setState({imageUrl: this.state.input})
         fetch('https://face-recog-api97.herokuapp.com/imageUrl', {
             method: 'post',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 input: this.state.input
             })
         })  
-        .then(response => response.json())      
-        .then(response => {
-            if (response) {
-                fetch('https://face-recog-api97.herokuapp.com/image', {
-                    method: 'put',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: this.state.user.id
+            .then(response => response.json())
+            .then(response => {
+                if (response) {
+                    fetch('https://face-recog-api97.herokuapp.com/image', {
+                        method: 'put',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: this.state.user.id
+                        })
                     })
-                })
-                    .then(response => response.json())
-                    .then(count => {
-                        this.setState(Object.assign(this.state.user, { entries: count }))
-                    })
-                    .catch(console.log)
+                        .then(response => response.json())
+                        .then(count => {
+                            this.setState(Object.assign(this.state.user, { entries: count }))
+                        })
+                        .catch(console.log)
 
+                }
+                this.displayFaceBox(this.calculateFacesLocation(response))
+            })
+            .catch(err => console.log(err));
+    }
+
+    calculateFacesLocation = data => {
+        return data.outputs[0].data.regions.map(face => {
+            const clarifaiFace = face.region_info.bounding_box
+            const image = document.getElementById('inputImage');
+            const width = Number(image.width);
+            const height = Number(image.height);
+            return {
+                leftCol: clarifaiFace.left_col * width,
+                topRow: clarifaiFace.top_row * height,
+                rightCol: width - (clarifaiFace.right_col * width),
+                bottomRow: height - (clarifaiFace.bottom_row * height)
             }
-            this.displayFaceBox(this.calculateFaceLocation(response))
-        })
-        .catch(err => console.log(err));
+        });
     }
 
-    calculateFaceLocation = (data) => {
-        const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-        const image = document.getElementById('inputImage');
-        const width = Number(image.width);
-        const height = Number(image.height);
-        return {
-            leftCol: clarifaiFace.left_col * width,
-            topRow: clarifaiFace.top_row * height,
-            rightCol: width - (clarifaiFace.right_col * width),
-            bottomRow: height - (clarifaiFace.bottom_row * height)
-        }
+    displayFaceBox = boxes => {
+        this.setState({ boxes })
     }
 
-    displayFaceBox = box => {
-        this.setState({
-            box: box
-        })
-    }
-
-    onRouteChange = (route) => {
+    onRouteChange = route => {
         if (route === 'signin' || route === 'register') {
             this.setState(initialState)
-        } else if(route === 'home') {
-            this.setState({isSignedIn: true})
+        } else if (route === 'home') {
+            this.setState({ isSignedIn: true })
         }
         this.setState({
             route: route
         })
     }
 
-    onInputChange = (event) => {
+    onInputChange = event => {
         this.setState({
             input: event.target.value
         })
     }
 
     render() {
-        const { imageUrl, box, route, isSignedIn } = this.state;
+        const { imageUrl, boxes, route, isSignedIn } = this.state;
 
         return (
             <div className="App">
@@ -137,7 +137,7 @@ class App extends Component {
                             onInputChange={this.onInputChange}
                             onButtonSubmit={this.onButtonSubmit}
                         />
-                        <FaceRecognition ImageUrl={imageUrl} box={box} />
+                        <FaceRecognition ImageUrl={imageUrl} boxes={boxes} />
                     </div> :
                     ( route === 'signin' ? 
                         <SignIn 
